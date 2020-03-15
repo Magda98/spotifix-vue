@@ -1,18 +1,25 @@
 <template>
-  <div class="home">
-    <img alt="Vue logo" src="../assets/logo.png" />
-    <HelloWorld msg="Welcome to Your Vue.js App" />
-  </div>
+<songsList :songs="recomendations" :objTrack="true" title="My TOP songs"/>
 </template>
 
 <script>
-// @ is an alias to /src
-import HelloWorld from "@/components/HelloWorld.vue";
+import { mapGetters, mapActions, mapMutations } from "vuex";
+import songsList from "@/components/songsList"
+  export default {
+    name: 'Home',
 
-export default {
-  name: "home",
-  components: {
-    HelloWorld
+    components: {
+      songsList
+    },
+    computed:{
+          ...mapGetters("spotify", ["recomendations"]),
+    },
+    methods: {
+    ...mapActions("toastMessage", ["hideAlert"]),
+     ...mapActions("user", ["login", "getUserInfo"])
+  },
+  created() {
+    this.$store.dispatch("spotify/getRecomendedTracks");
+  },
   }
-};
 </script>

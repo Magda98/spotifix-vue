@@ -1,31 +1,69 @@
 <template>
-  <div id="app">
-    <div id="nav">
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>
-    </div>
-    <router-view />
-  </div>
+  <v-app>
+     <sideBar/>
+    <v-content>
+      <router-view/>
+    </v-content>
+    <player/>
+          <v-snackbar
+      class="sp-snackbar"
+      @input="hideAlert"
+      :value="showAlert"
+      :multi-line="true"
+      :timeout="timeout"
+    >
+      <div v-bind:class="[ alertType + '--text' ]">
+        <v-icon color="white" v-bind:class="[ alertType + '--text'  ]">{{alertIcon}}</v-icon>
+        {{message}}
+        <v-btn text @click="hideAlert">Zamknij</v-btn>
+      </div>
+    </v-snackbar>
+  </v-app>
 </template>
 
-<style>
-#app {
-  font-family: "Avenir", Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-}
-#nav {
-  padding: 30px;
-}
+<script>
+import { mapGetters, mapActions } from 'vuex';
+import sideBar from "./components/sideBar"
+import player from "./components/player"
+export default {
+  name: 'App',
 
-#nav a {
-  font-weight: bold;
-  color: #2c3e50;
+  components:{
+    sideBar,
+    player
+  },
+  computed: {
+    ...mapGetters("toastMessage", [
+      "timeout",
+      "alertType",
+      "alertIcon",
+      "message",
+      "showAlert"
+    ]),
+    ...mapGetters("user", ["userInfo", "loggedIn", "noTokenProvided"])
+  },
+ methods: {
+    ...mapActions("toastMessage", ["hideAlert"]),
+  },
+  beforeCreate(){
+    this.$store.dispatch("user/getUserInfo");
+  },
+  beforeMount(){
+      this.$store.dispatch("user/getToken");
+  },
+};
+</script>
+<style lang="scss">
+#app{
+  overflow: hidden;
 }
-
-#nav a.router-link-exact-active {
-  color: #42b983;
+.v-application--wrap{
+  overflow: hidden;
+}
+.v-list-item{
+  padding: 0;
+}
+body {
+  overflow: hidden; /* Hide scrollbars */
 }
 </style>
