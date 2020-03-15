@@ -32,7 +32,7 @@ const actions = {
     login({ commit, state }) {
         const baseUrl = "https://accounts.spotify.com/authorize";
         const clientId = "9e71951e46e74a79ac078ac56f76ba69";
-        const redirectUri = "http://localhost:8080/";
+        const redirectUri = "https://magda98.github.io/spotifix-vue/";
         let scopes = new Array(
             "user-read-private",
             "user-read-email",
