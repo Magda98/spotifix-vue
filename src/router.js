@@ -12,17 +12,17 @@ export default new Router({
     mode: "history",
     base: process.env.BASE_URL,
     routes: [{
-            path: "/",
+            path: "/spotifix-vue/",
             name: "home",
             component: Home
         },
         {
-            path: "/albums/:id",
+            path: "/spotifix-vue/albums/:id",
             name: "albumSongs",
             component: AlbumSongs
         },
         {
-            path: "/albums",
+            path: "/spotifix-vue/albums",
             name: "albums",
             component: Albums
 
@@ -30,7 +30,7 @@ export default new Router({
             //     import ( /* webpackChunkName: "about" */ "./views/About.vue")
         },
         {
-            path: "/saved",
+            path: "/spotifix-vue/saved",
             name: "saved",
             component: SavedTracks
 
@@ -38,7 +38,7 @@ export default new Router({
             //     import ( /* webpackChunkName: "about" */ "./views/About.vue")
         },
         {
-            path: "/browse",
+            path: "/spotifix-vue/browse",
             name: "browse",
             component: Browse
         },
