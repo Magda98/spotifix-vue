@@ -25,7 +25,6 @@ export default {
         }).catch(e => cb(e.response.data.error))
     },
     getPlaylistSongs(cb, type) {
-        console.log(type);
         axios.get(type + "s/" + router.apps[0].$route.params.id + "/tracks").then(response => {
             cb(response.data);
         }).catch(e => cb(e.response.data.error))
