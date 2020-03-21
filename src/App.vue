@@ -12,11 +12,11 @@
       :multi-line="true"
       :timeout="timeout"
     >
-      <div v-bind:class="[ alertType + '--text' ]">
-        <v-icon color="white" v-bind:class="[ alertType + '--text'  ]">{{alertIcon}}</v-icon>
+      <div style="display: flex;align-items:center;margin:auto;" v-bind:class="[ alertType + '--text' ]">
+        <v-icon style="margin-right:20px;" color="white" v-bind:class="[ alertType + '--text'  ]">{{alertIcon}}</v-icon>
         {{message}}
-        <v-btn text @click="hideAlert">Zamknij</v-btn>
       </div>
+        <v-btn  style="margin-top: -25px;, font-size: 12px;" icon text @click="hideAlert"><v-icon color="white">mdi-close</v-icon></v-btn>
     </v-snackbar>
   </v-app>
 </template>

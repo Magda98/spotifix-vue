@@ -11,10 +11,13 @@ export default {
         songsList
     },
     computed: {
-    ...mapGetters("spotify", ["songs", "albumName", "trackObj"]),
+    ...mapGetters("spotify", ["songs", "albumName", "trackObj", "uris"]),
    },
     beforeCreate(){
         this.$store.dispatch("spotify/getUserPlaylistSongs");
     },
+    created(){
+        
+    }
 }
 </script>

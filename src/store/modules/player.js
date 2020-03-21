@@ -13,7 +13,7 @@ const state = {
         maxSongSec: 0,
         playing: false,
         interval: false,
-        currentTrack: {},
+        currentTrack: false,
         songDuration: 100,
         songCurrentMilisec: 0,
     }
@@ -41,8 +41,15 @@ const actions = {
             // Error handling
             player.addListener('initialization_error', ({ message }) => { console.error(message); });
             player.addListener('authentication_error', ({ message }) => { console.error(message); });
-            player.addListener('account_error', ({ message }) => { console.error(message); });
-            player.addListener('playback_error', ({ message }) => { console.error(message); });
+            player.addListener('account_error', ({ message }) => {
+                this.dispatch("toastMessage/alert", { message: "Sorry, You have no premium account. 😔", type: "warning" });
+            });
+            player.addListener('playback_error', ({ message }) => {
+                if (state.currentTrack.uri)
+                    this.dispatch("player/playSong", { uri: state.currentTrack.uri });
+                else
+                    this.dispatch("toastMessage/alert", { message: "No song was loaded", type: "error" });
+            });
 
             // Playback status updates
             player.addListener('player_state_changed', statePlayer => {
@@ -62,7 +69,7 @@ const actions = {
             player.addListener('ready', ({ device_id }) => {
                 commit("saveId", device_id);
                 // console.log('Ready with Device ID', device_id);
-                this.dispatch("toastMessage/alert", { message: "Player is ready" });
+                this.dispatch("toastMessage/alert", { message: "Player is ready", type: "success" });
                 commit("setInt", false);
             });
 
@@ -76,16 +83,24 @@ const actions = {
             Vue.prototype.$player = player;
         };
     },
-    playSong({ state, commit }, uri) {
+    playSong({ state, commit }, data) {
         api.playSong((song) => {
             if (song.status === 401)
                 this.dispatch("user/login");
-        }, { "uri": uri, "id": state.DevId });
+            else if (song.status === 403)
+                this.dispatch("toastMessage/alert", { message: "Sorry, You have no premium account. 😔", type: "warning" });
+            else if (song.status === 404)
+                this.dispatch("toastMessage/alert", { message: "Sorry, player is not ready yet.", type: "error" });
+        }, { track: data, "id": state.DevId });
     },
     playPlaylist({ state, commit }, uri) {
         api.playPlaylist((song) => {
             if (song.status === 401)
                 this.dispatch("user/login");
+            else if (song.status === 403)
+                this.dispatch("toastMessage/alert", { message: "Sorry, You have no premium account. 😔", type: "warning" });
+            else if (song.status === 404)
+                this.dispatch("toastMessage/alert", { message: "Sorry, player is not ready yet.", type: "error" });
         }, { "uri": uri, "id": state.DevId });
     },
     updateSec({ commit, state }) {
@@ -103,6 +118,7 @@ const actions = {
     },
     resume() {
         Vue.prototype.$player.resume();
+
     },
     prev() {
         Vue.prototype.$player.previousTrack();
@@ -131,6 +147,7 @@ const mutations = {
         } else {
             state.interval = clearInterval(state.interval);
             state.interval = false;
+            state.playing = false;
         }
 
     },

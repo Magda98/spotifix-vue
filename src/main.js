@@ -7,8 +7,7 @@ import * as types from "./store/mutation-types";
 import api from "./api"
 import axios from "axios";
 
-Vue.config.productionTip = true;
-
+Vue.config.productionTip = false;
 
 
 window.root = new Vue({
@@ -19,7 +18,6 @@ window.root = new Vue({
     created() {
         this.$store.subscribe((mutation, state) => {
             if (mutation.type === 'user/SAVE_TOKEN') {
-                // client.defaults.headers.Authorization = `Bearer ${state.token}`;
                 axios.defaults.headers.common['Authorization'] = `Bearer ${state.user.token}`;
             }
         })
@@ -27,11 +25,12 @@ window.root = new Vue({
             axios.defaults.headers.common['Authorization'] = `Bearer ${this.$store.state.user.token}`;
             this.$store.dispatch("player/spotifyPlayer");
             this.$store.dispatch("spotify/getUserTracks");
-            this.$store.dispatch("spotify/getRecomendedTracks");
             this.$store.dispatch("spotify/getFeaturedPlaylists");
             this.$store.dispatch("spotify/getUserAlbums");
             this.$store.dispatch("spotify/getNewReleases");
+            this.$store.dispatch("spotify/getRecomendedTracks");
         }
+        this.$store.commit("player/pause");
     },
     render: h => h(App),
 }).$mount("#app");

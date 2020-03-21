@@ -15,7 +15,6 @@ import songsList from "@/components/songsList"
           ...mapGetters("spotify", ["recomendations"]),
     },
     methods: {
-    ...mapActions("toastMessage", ["hideAlert"]),
      ...mapActions("user", ["login", "getUserInfo"])
   },
   created() {

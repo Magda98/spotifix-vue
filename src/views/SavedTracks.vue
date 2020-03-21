@@ -15,6 +15,7 @@ export default {
     ...mapGetters("spotify", ["saved"]),
 }, 
     created() {
+        this.$store.dispatch("spotify/getUserTracks");
     },
 }
 </script>

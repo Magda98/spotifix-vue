@@ -25,6 +25,21 @@ const getters = {
     featured: state => state.featuredPlaylists,
     albumsInfo: state => state.albums,
     songs: state => state.albumSongs,
+    uris: state => (
+        state.albumSongs.items.map(item =>
+            item.track ? item.track.uri : item.uri
+        )
+    ),
+    urisRecomendations: state => (
+        state.recomendations.items.map(item =>
+            item.track ? item.track.uri : item.uri
+        )
+    ),
+    urisSaved: state => (
+        state.saved.items.map(item =>
+            item.track ? item.track.uri : item.uri
+        )
+    ),
     saved: state => state.savedTracks,
     recomendations: state => state.recomendedTracks,
     albumName: state => state.currentAlbumName,
@@ -112,9 +127,11 @@ const mutations = {
     },
     recomendations(state, { tracks }) {
         state.recomendedTracks = tracks;
+        state.albumSongs = tracks;
     },
     saveTracks(state, { tracks }) {
         state.savedTracks = tracks;
+        state.albumSongs = tracks;
     },
     saveAlbums(state, { albums }) {
         state.albums = albums

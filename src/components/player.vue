@@ -6,7 +6,7 @@
    <v-row justify="center" align="center">
        <v-col  cols="2"> </v-col>
        <v-col  cols="2">
-        <v-card v-if="currentTrack" color="#2E2E2E"  >
+        <v-card v-if="currentTrack.name" color="#2E2E2E"  >
         <div class="d-flex flex-no-wrap justify-space-between">
               <div>
     <v-card-title   style="font-size:12px !important; line-height:12px;"
@@ -17,7 +17,7 @@
                 <v-card-subtitle style="font-size:10px;"><span v-for="artist in (currentTrack.artists)" :key="artist.id" v-html="artist.name + ' ' "></span></v-card-subtitle>
               </div>
 
-              <v-avatar
+              <v-avatar v-if="currentTrack.album"
                 class="ma-3"
                 size="50"
                 tile

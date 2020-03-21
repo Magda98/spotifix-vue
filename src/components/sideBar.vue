@@ -60,10 +60,10 @@ export default {
         drawer: true,
         items: [
           { title: 'MyAccount', icon: 'mdi-view-dashboard', account: true, tg: "_blank"},
-          {title: 'Home', icon: 'mdi-home-outline', url: '/spotifix-vue/'},
-          { title: 'Albums', icon: 'mdi-image', url:"/spotifix-vue/albums" },
-          { title: 'Liked songs', icon: 'mdi-heart', url: "/spotifix-vue/saved" },
-          {title: 'Browse', icon: 'mdi-animation-outline', url:'/spotifix-vue/browse'}
+          {title: 'Home', icon: 'mdi-home-outline', url: '/'},
+          { title: 'Albums', icon: 'mdi-image', url:"/albums" },
+          { title: 'Liked songs', icon: 'mdi-heart', url: "/saved" },
+          {title: 'Browse', icon: 'mdi-animation-outline', url:'/browse'}
         ],
         color: 'teal',
         right: false,

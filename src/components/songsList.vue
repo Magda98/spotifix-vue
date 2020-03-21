@@ -13,7 +13,7 @@
         v-for="(item, index) in songs.items"
         :key="index"
       >
-    <v-card v-if="objTrack? true: item.track" flat :class="{ 'grey lighten-5' : index%2 == 0}" v-on:click="objTrack? playSong(item.uri) : playSong(item.track.uri)">
+    <v-card v-if="objTrack? true: item.track" flat :class="{ 'grey lighten-5' : index%2 == 0}" v-on:click="objTrack? playSong({uris: uris, position: index}) : playSong({uris: uris, position: index})">
         <div class="d-flex flex-no-wrap justify-space-between">
               <div>
     <v-card-title   font-size="16px"
@@ -46,9 +46,10 @@ export default {
     songs: Object,
     objTrack: false,
     title: "",
+    listType: "",
   },
   computed:{
-    ...mapGetters("spotify", ["image", "type"])
+    ...mapGetters("spotify", ["image", "type", "uris"])
   },
     methods:{
         ...mapActions("player", ["playSong"]),

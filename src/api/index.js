@@ -30,9 +30,14 @@ export default {
         }).catch(e => cb(e.response.data.error))
     },
     playSong(cb, data) {
-        axios.put(`me/player/play?device_id=${data.id}`, {
-            uris: [data.uri]
-        }).then(response => {
+        axios.put(`me/player/play?device_id=${data.id}`,
+            data.track.position != undefined ? {
+                uris: data.track.uris,
+                offset: { position: data.track.position }
+            } : {
+                uris: [data.track.uri],
+            }
+        ).then(response => {
             cb(response.data)
         }).catch(e => cb(e.response.data.error))
     },
