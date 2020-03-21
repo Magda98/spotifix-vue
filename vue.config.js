@@ -3,5 +3,5 @@ module.exports = {
         "vuetify"
     ],
     publicPath: process.env.NODE_ENV === 'production' ?
-        '/spotifix-vue/' : '/'
+        '/' : '/spotifix-vue/'
 }
