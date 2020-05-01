@@ -1,92 +1,225 @@
 <template>
-  <v-bottom-navigation
-    dark
-    height="120px"
-  >
-   <v-row justify="center" align="center">
-       <v-col  cols="2"> </v-col>
-       <v-col  cols="2">
-        <v-card v-if="currentTrack.name" color="#2E2E2E"  >
-        <div class="d-flex flex-no-wrap justify-space-between">
-              <div>
-    <v-card-title   style="font-size:12px !important; line-height:12px;"
-                  class="headline"
-                  v-text="currentTrack.name"
-                ></v-card-title>
+  <v-bottom-navigation dark id="sp-nav">
+    <v-row justify="center" align="center">
+      <v-col v-if="$vuetify.breakpoint.mdAndUp" cols="2"> </v-col>
+      <v-col v-if="$vuetify.breakpoint.mdAndUp" cols="2">
+        <v-card
+          v-if="currentTrack.name && $vuetify.breakpoint.mdAndUp"
+          color="#2E2E2E"
+        >
+          <div class="d-flex flex-no-wrap justify-space-between">
+            <div>
+              <v-card-title
+                style="font-size:12px !important; line-height:12px;"
+                class="headline"
+                v-text="currentTrack.name"
+              ></v-card-title>
 
-                <v-card-subtitle style="font-size:10px;"><span v-for="artist in (currentTrack.artists)" :key="artist.id" v-html="artist.name + ' ' "></span></v-card-subtitle>
-              </div>
-
-              <v-avatar v-if="currentTrack.album"
-                class="ma-3"
-                size="50"
-                tile
-              >
-                <v-img :src="currentTrack.album.images[1].url"></v-img>
-              </v-avatar>
+              <v-card-subtitle style="font-size:10px;"
+                ><span
+                  v-for="artist in currentTrack.artists"
+                  :key="artist.id"
+                  v-html="artist.name + ' '"
+                ></span
+              ></v-card-subtitle>
             </div>
-          </v-card>
-       </v-col>
-       <v-col cols="3">
-          <v-btn v-on:click="prev">
-      <v-icon>mdi-skip-previous-circle-outline</v-icon>
-    </v-btn>
-    <v-btn v-if="!playing" v-on:click="resumed()">
-      <v-icon style="font-size: 35px;">mdi-play-circle-outline</v-icon>
-    </v-btn>
 
-    <v-btn v-if="playing" v-on:click="paused()" >
-      <v-icon style="font-size: 35px;">mdi-pause-circle-outline</v-icon>
-    </v-btn>
-    <v-btn v-on:click="next">
-      <v-icon >mdi-skip-next-circle-outline</v-icon>
-    </v-btn>
-       </v-col>
-        <v-col style="" cols="3">
-    <v-slider 
-          :label="(parseInt(maxSec/60)).toString() +':'+( parseInt(maxSec%60) < 10 ? ('0'+parseInt(maxSec%60).toString()) : parseInt(maxSec%60).toString() )"
+            <v-avatar v-if="currentTrack.album" class="ma-3" size="50" tile>
+              <v-img :src="currentTrack.album.images[1].url"></v-img>
+            </v-avatar>
+          </div>
+          <v-btn
+            icon
+            v-on:click="
+              liked[0] === false
+                ? saveTrack(currentTrack.id)
+                : deleteTrack(currentTrack.id)
+            "
+          >
+            <v-icon color="primary">{{
+              liked[0] === false ? "mdi-heart-outline" : "mdi-heart"
+            }}</v-icon>
+          </v-btn>
+        </v-card>
+      </v-col>
+      <v-col
+        md="3"
+        lg="3"
+        sm="12"
+        id="sp-palyer"
+        style="display:flex;justify-content:center;align-items:center;"
+      >
+        <v-btn v-on:click="prev">
+          <v-icon>mdi-skip-previous-circle-outline</v-icon>
+        </v-btn>
+        <v-btn v-if="player.paused" v-on:click="resume()">
+          <v-icon style="font-size: 35px;">mdi-play-circle-outline</v-icon>
+        </v-btn>
+
+        <v-btn v-if="!player.paused" v-on:click="pause()">
+          <v-icon style="font-size: 35px;">mdi-pause-circle-outline</v-icon>
+        </v-btn>
+        <v-btn v-on:click="next">
+          <v-icon>mdi-skip-next-circle-outline</v-icon>
+        </v-btn>
+      </v-col>
+      <v-col cols="4" style="display: flex; justify-content: space-evenly;">
+        <v-btn
+          icon
+          min-width="30"
+          min-height="30"
+          v-on:click="shuffle(!shufflePlay)"
+        >
+          <v-icon
+            :color="shufflePlay ? 'secondaryDark' : 'secondaryLight'"
+            style="font-size: 25px;"
+            >mdi-shuffle</v-icon
+          >
+        </v-btn>
+        <v-btn
+          v-if="repeatPlay === 'off'"
+          icon
+          min-width="30"
+          min-height="30"
+          v-on:click="repeat('context')"
+        >
+          <v-icon color="secondaryLight" style="font-size: 25px;"
+            >mdi-repeat</v-icon
+          >
+        </v-btn>
+        <v-btn
+          v-else-if="repeatPlay === 'context'"
+          icon
+          min-width="30"
+          min-height="30"
+          v-on:click="repeat('track')"
+        >
+          <v-icon color="secondaryDark" style="font-size: 25px;"
+            >mdi-repeat</v-icon
+          >
+        </v-btn>
+        <v-btn
+          v-else-if="repeatPlay === 'track'"
+          icon
+          min-width="30"
+          min-height="30"
+          v-on:click="repeat('off')"
+        >
+          <v-icon color="secondaryDark" style="font-size: 25px;"
+            >mdi-repeat-once</v-icon
+          >
+        </v-btn>
+      </v-col>
+      <v-col cols="4"></v-col>
+      <v-col cols="5">
+        <v-slider
           min="0"
           step="1000"
           v-on:change="seek"
           :max="songDuration"
           v-model="slider"
-        ></v-slider>
-            </v-col>
+        >
+          <template v-slot:prepend id="song">
+            <v-text-field
+              :value="
+                parseInt(currentSec / 60).toString() +
+                  ':' +
+                  (parseInt(currentSec % 60) < 10
+                    ? '0' + parseInt(currentSec % 60).toString()
+                    : parseInt(currentSec % 60).toString())
+              "
+              class="mt-0 pt-0"
+              hide-details
+              :disabled="true"
+              :readonly="true"
+              style="width: 35px;"
+            ></v-text-field>
+          </template>
+          <template v-slot:append>
+            <v-text-field
+              :value="
+                parseInt(maxSec / 60).toString() +
+                  ':' +
+                  (parseInt(maxSec % 60) < 10
+                    ? '0' + parseInt(maxSec % 60).toString()
+                    : parseInt(maxSec % 60).toString())
+              "
+              class="mt-0 pt-0"
+              hide-details
+              :disabled="true"
+              style="width: 35px;"
+              flat
+            ></v-text-field>
+          </template>
+        </v-slider>
+      </v-col>
     </v-row>
   </v-bottom-navigation>
 </template>
 
 <script>
-import { mapGetters, mapActions } from 'vuex';
+import { mapGetters, mapActions } from "vuex";
 export default {
-    data(){
-      return{
-        play: false,
-      }
-    },
-     computed: {
-        ...mapGetters("player", ["currentSec", "maxSec", "playing", "currentTrack", "songCurrentMilisec", "songDuration"]),
-          slider: {
-         get() { return this.songCurrentMilisec },
-         set(value) { this.updateSongTime(value)}
+  data() {
+    return {
+      play: false
+    };
+  },
+  computed: {
+    ...mapGetters("player", [
+      "currentSec",
+      "maxSec",
+      "player",
+      "currentTrack",
+      "songCurrentMilisec",
+      "songDuration",
+      "volume",
+      "shufflePlay",
+      "repeatPlay"
+    ]),
+    ...mapGetters("spotify", ["liked"]),
+    slider: {
+      get() {
+        return this.songCurrentMilisec;
       },
-    },
-    methods:{
-        ...mapActions("player", ["pause", "resume", "next", "prev", "seek", "updateSongTime"]),
-        resumed(){
-          if(!this.playing){this.resume();}
-        },
-        paused(){
-          if(this.playing){
-            this.pause();
-          }
-        }
-    },
-    
-}
+      set(value) {
+        this.updateSongTime(value);
+      }
+    }
+  },
+  methods: {
+    ...mapActions("player", [
+      "pause",
+      "resume",
+      "next",
+      "prev",
+      "seek",
+      "updateSongTime",
+      "setVolume",
+      "shuffle",
+      "repeat"
+    ]),
+    ...mapActions("spotify", ["saveTrack", "deleteTrack", "addToQueue"])
+  }
+};
 </script>
 <style lang="scss" scoped>
-.v-slider__track-background, .v-slider__track-fill, .v-input__slot, .v-slider__thumb-container, .v-slider__thumb:before {
-    transition: 3.3s cubic-bezier(0.25, 0.8, 0.5, 1) !important;  
+.v-slider__track-background,
+.v-slider__track-fill,
+.v-input__slot,
+.v-slider__thumb-container,
+.v-slider__thumb:before {
+  transition: 3.3s cubic-bezier(0.25, 0.8, 0.5, 1) !important;
+}
+#sp-nav {
+  height: 170px !important;
+}
+@media only screen and (max-width: 900px) {
+  #sp-nav {
+    height: 45px !important;
+  }
+  .col-sm-12 {
+    padding: 0 !important;
+  }
 }
 </style>

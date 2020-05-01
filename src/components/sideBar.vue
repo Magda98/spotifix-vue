@@ -1,7 +1,8 @@
 <template>
     <v-navigation-drawer
-        
+           :permanent="true"
         :color="color"
+        :mini-variant="!$vuetify.breakpoint.mdAndUp"
         :expand-on-hover="expandOnHover"
         :right="right"
         absolute
@@ -44,7 +45,7 @@
           </v-list-item>
            
         </v-list>
-          <v-switch
+          <v-switch v-if="$vuetify.breakpoint.mdAndUp"
           outlined
         v-model="expandOnHover"
         class="ma-2"
@@ -72,12 +73,6 @@ export default {
     },
      computed:{
       ...mapGetters("user", ["userInfo", "loggedIn", "userProfile"]),
-      label(){
-        if(this.expandOnHover)
-            return "pokaż"
-        else
-            return "ukryj"
-      }
     },
     created() {
   },

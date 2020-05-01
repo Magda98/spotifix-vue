@@ -5,13 +5,13 @@ import Albums from "./views/Albums.vue";
 import SavedTracks from "./views/SavedTracks.vue";
 import AlbumSongs from "./views/AlbumSongs.vue";
 import Browse from "./views/Browse.vue";
-import NotFound from "./views/NotFound.vue"
+import NotFound from "./views/NotFound.vue";
 
 Vue.use(Router);
 
 export default new Router({
-    mode: "history",
-    base: process.env.BASE_URL,
+    mode: "hash",
+    base: '/spotifix-vue/',
     routes: [{
             path: "/",
             name: "home",
@@ -44,7 +44,7 @@ export default new Router({
             component: Browse
         },
         {
-            path: '*',
+            path: "*",
             name: "notfound",
             component: NotFound
         }
