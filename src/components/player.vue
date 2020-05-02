@@ -1,8 +1,8 @@
 <template>
-  <v-bottom-navigation dark id="sp-nav">
+  <v-bottom-navigation dark id="sp-nav" v-if="player">
     <v-row justify="center" align="center">
       <v-col v-if="$vuetify.breakpoint.mdAndUp" cols="2"> </v-col>
-      <v-col v-if="$vuetify.breakpoint.mdAndUp" cols="2">
+      <v-col v-if="$vuetify.breakpoint.mdAndUp" cols="3" style="padding: 0">
         <v-card
           v-if="currentTrack.name && $vuetify.breakpoint.mdAndUp"
           color="#2E2E2E"
@@ -23,23 +23,24 @@
                 ></span
               ></v-card-subtitle>
             </div>
-
             <v-avatar v-if="currentTrack.album" class="ma-3" size="50" tile>
               <v-img :src="currentTrack.album.images[1].url"></v-img>
             </v-avatar>
+            <v-card-actions>
+              <v-btn
+                icon
+                v-on:click="
+                  liked[0] === false
+                    ? saveTrack(currentTrack.id)
+                    : deleteTrack(currentTrack.id)
+                "
+              >
+                <v-icon color="red">{{
+                  liked[0] === false ? "mdi-heart-outline" : "mdi-heart"
+                }}</v-icon>
+              </v-btn>
+            </v-card-actions>
           </div>
-          <v-btn
-            icon
-            v-on:click="
-              liked[0] === false
-                ? saveTrack(currentTrack.id)
-                : deleteTrack(currentTrack.id)
-            "
-          >
-            <v-icon color="primary">{{
-              liked[0] === false ? "mdi-heart-outline" : "mdi-heart"
-            }}</v-icon>
-          </v-btn>
         </v-card>
       </v-col>
       <v-col
@@ -63,7 +64,7 @@
           <v-icon>mdi-skip-next-circle-outline</v-icon>
         </v-btn>
       </v-col>
-      <v-col cols="4" style="display: flex; justify-content: space-evenly;">
+      <v-col cols="3" style="display: flex; justify-content: space-evenly;">
         <v-btn
           icon
           min-width="30"
@@ -110,8 +111,8 @@
           >
         </v-btn>
       </v-col>
-      <v-col cols="4"></v-col>
-      <v-col cols="5">
+      <v-col cols="2"></v-col>
+      <v-col cols="6" style="padding: 0; margin-top: 0px;">
         <v-slider
           min="0"
           step="1000"
@@ -212,7 +213,7 @@ export default {
   transition: 3.3s cubic-bezier(0.25, 0.8, 0.5, 1) !important;
 }
 #sp-nav {
-  height: 170px !important;
+  height: 150px !important;
 }
 @media only screen and (max-width: 900px) {
   #sp-nav {
