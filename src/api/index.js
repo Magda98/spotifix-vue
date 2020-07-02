@@ -7,8 +7,7 @@ axios.defaults.baseURL = SETTINGS.API_BASE_PATH;
 axios.defaults.headers.post["Content-Type"] = "application/json";
 
 const api = {
-  clientID: "9e71951e46e74a79ac078ac56f76ba69",
-  clientSecret: "***REMOVED***"
+  clientID: "9e71951e46e74a79ac078ac56f76ba69"
 };
 
 export default {
